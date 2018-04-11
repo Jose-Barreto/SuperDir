@@ -1,12 +1,3 @@
-It had a total of 10 functions: select drive, show file, print file, rename file, delete file, undelete file, copy file, mark file read-only/read-write, delete selected files and copy selected files.
-
-Note that reading the directory was done by actually reading the 128-byte disk sectors at the beginning of the disk and figuring out the 32-byte data structure describing each file. Names and extensions were fixed at 8.3 characters at the time.
-
-Also, there were no graphics in this system, so this was all done with a 
-
-I'm not particularly proud of the pre-allocated arrays for storing the data. My sort function was also pretty lame. But hey, I was only starting to use Pascal...
-
-
 Program SuperDir;
 {$I-} {$C-}
 Const
