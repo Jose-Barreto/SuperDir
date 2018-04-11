@@ -1,12 +1,18 @@
+{ SuperDir, a File Manager                            }
+{ Jose Barreto, 1987                                  }
+{ Variable names and on-screen messages in Portuguese }
+{ Comments in English added in 2018                   }
+
 Program SuperDir;
 {$I-} {$C-}
+
+
 Const
   Blc = 160;
   Max = 265;
+  { ten functions implemented for the file manager }
   Funcao  :  Array[1..10] of String[8]
-          = ('Mostr','Impri','Renom','Apaga','Recup'
-            ,'Copia','Rw/Ro','Apg-*','Cop-*','Drive');
-  Pirata  = 'AETRAAROIOP';
+          = ('Mostr','Impri','Renom','Apaga','Recup','Copia','Rw/Ro','Apg-*','Cop-*','Drive');
   TmDir   = 29;
   ClJan   = 31;
   TmJan   = 48;
@@ -45,10 +51,14 @@ Var
   Xgrp,Xblc   :Integer;
   Xent,Xres   :Integer;
 
+{ makes a beeping shound }
+
 Procedure Bip;
 Begin
   Write(^G);
 End;
+
+{ shows text at a particular row and column in the screen }
 
 Procedure Mos(L,C:Byte;Msg:Buffer);
 Begin
@@ -56,11 +66,15 @@ Begin
   Write(Msg);
 End;
 
+{ shows a WAIT message }
+
 Procedure Espere;
 Begin
   Mos(1,2,'ESPERE');
   Mos(1,1,'');
 End;
+
+{ clears message area }
 
 Procedure Limpa;
 Begin
@@ -68,20 +82,26 @@ Begin
   Mos(1,1,'');
 End;
 
+{ returns a string with N characters C }
+
 Function Rep(N:Byte;C:Char):Buffer;
 Var Aux:Buffer; X:Byte;
 Begin
   FillChar(Aux,N+1,C); Aux[0]:=Chr(N); Rep:=Aux;
 End;
 
-FunCtion CNm(Nom:NmArqD):NmArqD;
+{ formats a file name as D:\NAME.EXT }
+
+Function CNm(Nom:NmArqD):NmArqD;
 Begin
   Nom:=Chr(Drv+65)+':'+Copy(Nom,1,12);
   x:=Pos(' ',Nom); If x>0 Then Delete(Nom,x,Pos('.',Nom)-x);
   CNm:=Nom;
 End;
 
-FunCtion NmC(Nom:NmArqD):NmArqD;
+{ formats a file name as exactly 8.3 characters }
+
+Function NmC(Nom:NmArqD):NmArqD;
 Begin
   If Pos('.',Nom)=0 Then Nom:=Nom+'.';
   X:=Pos('.',Nom); Insert(Rep(9-x,' '),Nom,x);
@@ -89,6 +109,8 @@ Begin
   For x:=1 to 12 do Nom[x]:=Upcase(Nom[x]);
   NmC:=Nom;
 End;
+
+{ updates the scrolling message window on the screen }
 
 Procedure Mos_Jan(Msg:Buffer);
 Var x:Byte;
@@ -105,6 +127,8 @@ Begin
   End;
 End;
 
+{ adds message to the scrolling message window }
+
 Procedure Jan(Msg:Buffer);
 Var Resto:buffer;
 Begin
@@ -117,10 +141,14 @@ Begin
   Mos_Jan(Msg);
 End;
 
+{ adds message to the scrolling message window, with a blank line before and after }
+
 Procedure Jan2(Msg:Buffer);
 Begin
   Mos_Jan(''); Mos_Jan(Msg); Mos_Jan('');
 End;
+
+{ prompts the user for a string }
 
 FunCtion Pede(Msg:Buffer;Tam:Byte):NmArqD;
 Var Aux:NmArqD;
@@ -130,6 +158,8 @@ Begin
   Jan(Msg+Aux); If Aux='' Then Aux:='*';
   Pede:=Aux;
 End;
+
+{ draws a square on the screen }
 
 Procedure Quadro(L1,L2,C,T:Byte);
 Begin
@@ -141,6 +171,8 @@ Begin
   Mos(L2,C,'+'+Rep(T,'-')+'+');
 End;
 
+{ clears the function window }
+
 Procedure Mos_Fun;
 Begin
   Mos(21,Cola*8-7,Rep(7,' '));
@@ -150,6 +182,8 @@ Begin
   Quadro(21,23,Col*8-7,5);
   Cola:=Col;
 End;
+
+{ shows the directory }
 
 Procedure Mos_Dir(M:Byte);
 Var Monte:Boolean;
@@ -176,6 +210,8 @@ Begin
   Lin:=At-Pag+9; Mos(lin,02,'*');
 End;
 
+{ checks if a file exists }
+
 FunCtion  Ex(Arq:NmArqD;Us:Byte):Boolean;
 Var       Arq9 : File;
 Begin
@@ -185,6 +221,8 @@ Begin
   Close(Arq9);
   Limpa;
 End;
+
+{ sorts directory }
 
 Procedure Sort_Dir;
 Var  Ok  :Byte;
@@ -226,6 +264,8 @@ Begin
   Ct:=Aux2;
 End;
 
+{ shows drive, # files, KB used, KB free, # marked files and KB marked }
+
 Procedure Mos_Kb;
 Var Ctn:Integer;
 Begin
@@ -239,6 +279,8 @@ Begin
   Mos(4,63,''); Write(Kbm:5,' Kb');
 End;
 
+{ shows empty directory entry when there are no files }
+
 Procedure Vazio;
 Begin
   Ct:=1;
@@ -248,6 +290,8 @@ Begin
   Mar[1]:=False;
   Tam[1]:=0;
 End;
+
+{ reads directory from disk, parses the information }
 
 Procedure Le_Dir(M:Byte);
 Var  Ok,Base:Byte;
@@ -307,6 +351,8 @@ Begin
   Limpa; Mos_Dir(M); Ctm:=0; Kbm:=0; Mos_Kb;
 End;
 
+{ file not found message }
+
 Procedure N_Ex;
 Begin
   If Usu[At]<32
@@ -314,6 +360,8 @@ Begin
   Else Begin Bip; Jan2('** Arquivo Apagado   '); end;
   Fim:=True;
 End;
+
+{ reads disk sector }
 
 Procedure Leia_Setor(trl,str:byte);
 Begin
@@ -325,6 +373,8 @@ Begin
       Dma[0]:=#128;
 End;
 
+{ writes disk sector }
+
 Procedure Grave_Setor(trl,str:byte);
 Begin
       Bios(08,drv);
@@ -335,6 +385,8 @@ Begin
       Bios(13);
 End;
 
+{ translates physical to logical address }
+
 Function  Logico(Fis:Byte):Byte;
 Var XLT,DPH:Integer;
 Begin
@@ -342,6 +394,8 @@ Begin
         XLT:=Mem[DPH]+Mem[DPH+1]*256;
         If XLT=0 then Logico:=Fis else Logico:=Mem[XLT+Fis];
 End;
+
+{ initializes the program, clears screen, initializes the user interface } 
 
 Procedure Inicio;
 Var  Nom :String[80];
@@ -351,11 +405,7 @@ Begin
   Nom:=     '(C) 1987 Jose Barreto Jr';
   Check:=0;
   For X:=1 to Length(Nom) do Check:=Check+Ord(Nom[X])*X;
-  If Check<>25478 Then
-  Begin
-    For X:=1 to 6 do Write(Copy(Pirata,14-x*2-1,1));
-    Halt;
-  End;
+  If Check<>25478 Then Halt;
   Quadro(01,06,01,TmDir);
   Quadro(01,06,ClJan,TmJan);
   Mos(03,05,'SuperDiretorio - Ver 3.5');
@@ -369,6 +419,8 @@ Begin
   Lint:=1; Lin:=8; Cola:=1; Col:=1;
 End;
 
+{ marks a file to later delete or copy } 
+
 Procedure Mark;
 Var Marca:Char;
 Begin
@@ -381,6 +433,8 @@ Begin
     Mos_Kb; Mos_Dir(1);
   End;
 End;
+
+{ shows contents of a file } 
 
 Procedure List;
 Var Vid:Buffer;
@@ -413,6 +467,8 @@ Begin
   End;
 End;
 
+{ prints the contents of a file }
+
 Procedure Print;
 Var Conj:Set of Char;
 Begin
@@ -439,6 +495,9 @@ Begin
     End;
   End;
 End;
+
+{ saves files to the destination disk during a copy }
+{ prompts for disk change if copying with a single drive }
 
 Procedure Grv_Dest;
 Label gsai;
@@ -493,6 +552,8 @@ Begin
   End;
 End;
 
+{ prompts for the destination drive and user before copy }
+
 Procedure Ped_Dest;
 Begin
   Drd:=Pede('Drive destino    (a-p):',1);
@@ -512,6 +573,8 @@ Begin
     End;
   End;
 End;
+
+{ copy file }
 
 Procedure Copia;
 label sai;
@@ -550,6 +613,8 @@ Begin
   sai:;
 End;
 
+{ protect file - mark file as read-only or read-write }
+
 Procedure Protege;
 Begin
   Nm1:=Cnm(Dir[At]);
@@ -562,6 +627,8 @@ Begin
     Mos_Dir(1);
   End;
 End;
+
+{ renames file }
 
 Procedure Ren;
 Begin
@@ -595,6 +662,8 @@ Begin
   End;
 End;
 
+{ Erase file }
+
 Procedure Era;
 Begin
   Fim:=False;
@@ -627,6 +696,8 @@ Begin
     End;
   End;
 End;
+
+{ Undelete file }
 
 Procedure Recup;
 Var Achou,Grava:Boolean;
@@ -673,6 +744,8 @@ Begin
   End;
 End;
 
+{ change drive }
+
 Procedure Drive;
 Begin
   Let:=Pede('Novo Drive (a-p):',1);
@@ -684,6 +757,8 @@ Begin
     Drv:=Ord(let)-65; Le_Dir(2);
   End;
 End;
+
+{ shows basic commands, using number pad }
 
 Procedure Help;
 Begin
@@ -698,6 +773,8 @@ Begin
   Jan('  Use o teclado numerico reduzido');
   Jan(''); Jan(''); Opc:=' ';
 End;
+
+{ executes selected action }
 
 Procedure Aciona;
 Begin
@@ -741,6 +818,8 @@ Begin
    10:Drive;
   End;
 End;
+
+{ main loop }
 
 Begin
   Drv:=Mem[4] and 15;
