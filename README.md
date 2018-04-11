@@ -1,16 +1,17 @@
-SuperDir - A very old File Manager for the CP/M OS, written in Turbo Pascal
+#SuperDir
+A very old File Manager for the CP/M OS, written in Turbo Pascal
 
 This file manager has a total of 10 functions: 
-- select drive
-- show file
-- print file
-- rename file
-- delete file
-- undelete file
-- copy file
-- mark file read-only/read-write
-- delete selected files 
-- copy selected files.
+* select drive
+* show file
+* print file
+* rename file
+* delete file
+* undelete file
+* copy file
+* mark file read-only/read-write
+* delete selected files 
+* copy selected files.
 
 Note that reading the directory was done by actually reading the 128-byte disk sectors at the beginning of the disk and figuring out the 32-byte data structure describing each file. Names and extensions were fixed at 8.3 characters at the time.
 
