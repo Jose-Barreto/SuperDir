@@ -19,4 +19,4 @@ Also, there were no graphics in this system, so this was all done with standard 
 
 I'm not particularly proud of the pre-allocated arrays for storing the data. My sort function was also pretty lame. But hey, I wrote this in the 1980s when I was only starting to learn programming...
 
-Associated blog post at https://blogs.technet.microsoft.com/josebda/2018/04/10/open-sourcing-superdir-a-file-manager-for-cpm-written-in-the-1980s/
+Associated blog post at https://barreto.home.blog/2018/04/10/open-sourcing-superdir-a-file-manager-for-cpm-written-in-the-1980s/
